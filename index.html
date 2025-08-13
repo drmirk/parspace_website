@@ -45,7 +45,7 @@
       margin: 0;
       min-height: 100%;
       background-color: #FFFFFF;
-          background-size: 100% 100%;
+      background-size: 100% 100%;
     }
 
     .center {
@@ -94,32 +94,181 @@
       right: 0;
     }
 
+    #bottom-container {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #000000;
           }
     }
   </style>
+  <style id="progress-bar-style">
+    #progress-bar {
+      width: 100%;
+      height: 4.8px;
+      display: inline-block;
+      position: relative;
+      width: 220px;
+      background: gray;
+      overflow: hidden;
+    }
+    #progress-bar::after {
+      content: '';  
+      box-sizing: border-box;
+      width: calc(var(--progress-percent, 0) * 100%);
+      height: 4.8px;
+      background: #FFF000;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+  <style id="countdown-text-style">
+    @property --percent {
+      syntax: "<number>";
+      initial-value: 0;
+      inherits: false;
+    }
+    @property --temp {
+      syntax: "<number>";
+      initial-value: 0;
+      inherits: false;
+    }
+    @property --v1 {
+      syntax: "<integer>";
+      initial-value: 0;
+      inherits: false;
+    }
+    @property --v2 {
+      syntax: "<integer>";
+      initial-value: 0;
+      inherits: false;
+    }
+
+    #countdown-text {
+        font: 800 16px monospace;
+        color: #000000;
+        padding-bottom: 5px; /* Add some spacing */
+        --temp: calc(var(--percent) * 100);
+        --v1: max(var(--temp) - 0.5, 0);
+        --v2: max((var(--temp) - var(--v1)) * 100 - 0.5, 0);
+        counter-reset: v1 var(--v1) v2 var(--v2);
+    }
+
+    #countdown-text::before {
+        content: counter(v1) "." counter(v2, decimal-leading-zero) "%";
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #countdown-text {
+        color: #FFFFFF;
+      }
+    }
+  </style>
+
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();
       document.getElementById("splash-branding")?.remove();
+      document.getElementById("bottom-container")?.remove();
       document.body.style.background = "transparent";
     }
   </script>
+
 </head>
 <body>
-  <picture id="splash-branding">
-    <source srcset="splash/img/branding-1x.png 1x, splash/img/branding-2x.png 2x, splash/img/branding-3x.png 3x, splash/img/branding-4x.png 4x" media="(prefers-color-scheme: light)">
-    <source srcset="splash/img/branding-dark-1x.png 1x, splash/img/branding-dark-2x.png 2x, splash/img/branding-dark-3x.png 3x, splash/img/branding-dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-    <img class="bottom" aria-hidden="true" src="splash/img/branding-1x.png" alt="">
-  </picture>
-  <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
-  </picture>
+  <div id="splash">
+    <picture >
+        <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+        <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+        <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+    </picture>
+  </div>
+  <div id="bottom-container">
+    <div id="countdown-text"></div>
+    <div id="progress-bar"></div>
+    <div id="splash-branding">
+      <picture >
+        <source srcset="splash/img/branding-1x.png 1x, splash/img/branding-2x.png 2x, splash/img/branding-3x.png 3x, splash/img/branding-4x.png 4x" media="(prefers-color-scheme: light)">
+        <source srcset="splash/img/branding-dark-1x.png 1x, splash/img/branding-dark-2x.png 2x, splash/img/branding-dark-3x.png 3x, splash/img/branding-dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+        <img aria-hidden="true" src="splash/img/branding-1x.png" alt="">
+      </picture>
+    </div>
+  </div>
 
+  <script id="animation-script">
+    (function() {
+      const progressBar = document.getElementById('progress-bar');
+      const countdownText = document.getElementById('countdown-text');
+
+      if (!progressBar || !countdownText) {
+        console.error("Animation elements not found.");
+        return;
+      }
+
+      const totalDuration = 15000; // 15 seconds
+      let lastTime = 0;
+      let progress = 0; // Progress from 0.0 to 1.0
+
+      // State for pausing
+      let isPaused = false;
+      let pauseEndTime = 0;
+      let pauseSchedule = [];
+      let nextPauseIndex = 0;
+
+      function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function setupNewCycle() {
+        isPaused = false;
+        pauseEndTime = 0;
+        nextPauseIndex = 0;
+
+        const numPauses = Math.floor(Math.random() * 4) + 7; // 7 to 10 pauses
+        const points = new Set();
+        while (points.size < numPauses) {
+          points.add(getRandom(0.03, 0.99)); // Schedule pauses between 3% and 99%
+        }
+        pauseSchedule = Array.from(points).sort((a, b) => a - b);
+      }
+
+      function animate(currentTime) {
+        if (!lastTime) lastTime = currentTime;
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        if (isPaused) {
+          if (currentTime >= pauseEndTime) isPaused = false;
+        } else {
+          progress = (progress + deltaTime / totalDuration) % 1.0;
+          if (progress < (deltaTime / totalDuration)) setupNewCycle(); // Just looped
+
+          if (nextPauseIndex < pauseSchedule.length && progress >= pauseSchedule[nextPauseIndex]) {
+            isPaused = true;
+            pauseEndTime = currentTime + getRandom(300, 700); // Pause for 300-700ms
+            nextPauseIndex++;
+          }
+
+          progressBar.style.setProperty('--progress-percent', progress);
+          countdownText.style.setProperty('--percent', progress);
+        }
+        requestAnimationFrame(animate);
+      }
+
+      setupNewCycle();
+      requestAnimationFrame(animate);
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async=""></script>
 
 </body></html>

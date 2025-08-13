@@ -15770,6 +15770,7 @@ class CompiledApp {
 "_extendedAnimation",
 "_destinationControllers",
 "_extendedController",
+"assets/small_logo.png",
 "Theme",
 "Review",
 "Review Mistakes",
