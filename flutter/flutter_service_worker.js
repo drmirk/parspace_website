@@ -1,274 +1,31 @@
 'use strict';
-const MANIFEST = 'flutter-app-manifest';
-const TEMP = 'flutter-temp-cache';
-const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"favicon-16x16.png": "81cc50ce6a40549aed9ad83f9c079713",
-"flutter_bootstrap.js": "11b70fe8bae893dbf58e102e40ea6acb",
-"version.json": "810f5503d3fcf2cf5f6eb43e5ba2c9e3",
-"splash/img/light-2x.png": "388a5f5fb65f2b1043ffc1bde1f1d8b4",
-"splash/img/branding-4x.png": "ea8fab26ffdfb8ef4a90272d3250c5e6",
-"splash/img/dark-4x.png": "d5608ebc0c31411a53600ebcb104bcef",
-"splash/img/branding-dark-1x.png": "ee9d752bbccccc52681fdbbc6f09f48e",
-"splash/img/light-3x.png": "93d7e579aca35d978460470728a04098",
-"splash/img/dark-3x.png": "93d7e579aca35d978460470728a04098",
-"splash/img/light-4x.png": "d5608ebc0c31411a53600ebcb104bcef",
-"splash/img/branding-2x.png": "d6718bb2f2f9f09c9eb0f7e169c2c1d4",
-"splash/img/branding-3x.png": "1d6b2325ee6a3bc7e6cabde576be0884",
-"splash/img/dark-2x.png": "388a5f5fb65f2b1043ffc1bde1f1d8b4",
-"splash/img/dark-1x.png": "b1e5469fc8fbc6a69872e76bb24bd3de",
-"splash/img/branding-dark-4x.png": "ea8fab26ffdfb8ef4a90272d3250c5e6",
-"splash/img/branding-1x.png": "ee9d752bbccccc52681fdbbc6f09f48e",
-"splash/img/branding-dark-2x.png": "d6718bb2f2f9f09c9eb0f7e169c2c1d4",
-"splash/img/light-1x.png": "b1e5469fc8fbc6a69872e76bb24bd3de",
-"splash/img/branding-dark-3x.png": "1d6b2325ee6a3bc7e6cabde576be0884",
-"favicon.ico": "0a43fc834bb1a62744bd20dacc1e551a",
-"index.html": "1cc650286c36e7d5ac168684b347454c",
-"/": "1cc650286c36e7d5ac168684b347454c",
-"android-chrome-192x192.png": "df8159160c72336d521e9ef3c31cd476",
-"apple-touch-icon.png": "4bbfd33336f5f072746d5b6c532a20ee",
-"main.dart.js": "1e794a78e14b04ace9b816f428a616f4",
-"sqlite3.wasm": "9839e2a1f55c56501c36b8e8483ee663",
-"flutter.js": "24bc71911b75b5f8135c949e27a2984e",
-"main.dart.mjs": "f980eda904f281d75d422be326ae4a21",
-"drift_worker.js": "844f2832256fce71608904bd31b15ca8",
-"android-chrome-512x512.png": "d55a292ba073fbef1c888fa8a2814923",
-"site.webmanifest": "685a574cb7b4b1eb749fd5327422a9fb",
-"icons/Icon-192.png": "38da164298a73f543896b85045ac7963",
-"icons/Icon-maskable-192.png": "38da164298a73f543896b85045ac7963",
-"icons/Icon-maskable-512.png": "3cf32442246e6af551e5bc6dab82bfa5",
-"icons/Icon-512.png": "3cf32442246e6af551e5bc6dab82bfa5",
-"manifest.json": "3c994c3692840459d2b2f3bacbaf9bfd",
-"main.dart.wasm": "a230dfd87fb9b5cb07eee91aea41fde9",
-"assets/NOTICES": "05cec99dd15eb34637bd4fc6d62f0731",
-"assets/FontManifest.json": "5a0e8b30ec64a81b400a6792e1579206",
-"assets/AssetManifest.bin.json": "f71f4af021cec00338f402c8cfd409ed",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_AMS-Regular.ttf": "657a5353a553777e270827bd1630e467",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Script-Regular.ttf": "55d2dcd4778875a53ff09320a85a5296",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Size3-Regular.ttf": "e87212c26bb86c21eb028aba2ac53ec3",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Typewriter-Regular.ttf": "87f56927f1ba726ce0591955c8b3b42d",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Caligraphic-Bold.ttf": "a9c8e437146ef63fcd6fae7cf65ca859",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_SansSerif-Bold.ttf": "ad0a28f28f736cf4c121bcb0e719b88a",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Main-Bold.ttf": "9eef86c1f9efa78ab93d41a0551948f7",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Fraktur-Regular.ttf": "dede6f2c7dad4402fa205644391b3a94",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Main-Regular.ttf": "5a5766c715ee765aa1398997643f1589",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_SansSerif-Italic.ttf": "d89b80e7bdd57d238eeaa80ed9a1013a",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Math-Italic.ttf": "a7732ecb5840a15be39e1eda377bc21d",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Main-Italic.ttf": "ac3b1882325add4f148f05db8cafd401",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Fraktur-Bold.ttf": "46b41c4de7a936d099575185a94855c4",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Size2-Regular.ttf": "959972785387fe35f7d47dbfb0385bc4",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_SansSerif-Regular.ttf": "b5f967ed9e4933f1c3165a12fe3436df",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Size1-Regular.ttf": "1e6a3368d660edc3a2fbbe72edfeaa85",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Caligraphic-Regular.ttf": "7ec92adfa4fe03eb8e9bfb60813df1fa",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Size4-Regular.ttf": "85554307b465da7eb785fd3ce52ad282",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Main-BoldItalic.ttf": "e3c361ea8d1c215805439ce0941a1c8d",
-"assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Math-BoldItalic.ttf": "946a26954ab7fbd7ea78df07795a6cbc",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
-"assets/packages/material_symbols_icons/lib/fonts/MaterialSymbolsRounded.ttf": "c62d427003f203068f4b7120b1f83085",
-"assets/packages/material_symbols_icons/lib/fonts/MaterialSymbolsOutlined.ttf": "797fa54b59399c5f83a2e7ae77cc0f2b",
-"assets/packages/material_symbols_icons/lib/fonts/MaterialSymbolsSharp.ttf": "70fc19535caa54c28592f226f29a0f96",
-"assets/packages/media_kit/assets/web/hls1.4.10.js": "bd60e2701c42b6bf2c339dcf5d495865",
-"assets/packages/wakelock_plus/assets/no_sleep.js": "7748a45cd593f33280669b29c2c8919a",
-"assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
-"assets/shaders/stretch_effect.frag": "40d68efbbf360632f614c731219e95f0",
-"assets/AssetManifest.bin": "516df59cb6d526eba39b58f35c4bc88c",
-"assets/fonts/MaterialIcons-Regular.otf": "f6b6d1005fea5f716b8326f7c989bf51",
-"assets/assets/logo_full.png": "8af11be6eb6d07b8f53ba53055c04478",
-"assets/assets/lesson_finished.mp3": "1fc376d174456448e0770aada306fc9e",
-"assets/assets/video_creator/doodle.png": "7f39b01d0ec1dbe097c39a798bd5a642",
-"assets/assets/video_creator/qr2.png": "a6c816582208561fe957e8a32e462b1b",
-"assets/assets/video_creator/doodle2.png": "90b0505771951b73e583302288503180",
-"assets/assets/video_creator/qr.png": "1ed22f8fe563c9ab6f23ce8fd204dd6d",
-"assets/assets/small_logo.png": "042e04a5ba00fc06f1ee8bce1b1cc9f4",
-"assets/assets/right_answer.mp3": "4c1ff173083ae82d0e517e91114098d1",
-"assets/assets/lib.so": "d056cd98504d28419208238fca5b3f70",
-"assets/assets/lottie/IOS_Notification_Enable.json": "20d3c82c6ceb3b96e784b6a8bf467c6b",
-"assets/assets/lottie/MacOS_Notification_Enable.json": "3193fabeb22dae290c64e946dd2ec3aa",
-"assets/assets/lottie/Flying_Rocket.json": "8d36025e4f2f340d22f3f6aad684935c",
-"assets/assets/lottie/Android_Notification_Enable.json": "5adfb7845f76f4ba3e8f9c91345e345b",
-"assets/assets/wrong_answer.mp3": "aaa82a5654695d71e2b960e05117517a",
-"favicon-32x32.png": "92bb4a6c16ec7df138243ff075c77fb2",
-"canvaskit/skwasm.js": "8060d46e9a4901ca9991edd3a26be4f0",
-"canvaskit/skwasm_heavy.js": "740d43a6b8240ef9e23eed8c48840da4",
-"canvaskit/skwasm.js.symbols": "3a4aadf4e8141f284bd524976b1d6bdc",
-"canvaskit/canvaskit.js.symbols": "a3c9f77715b642d0437d9c275caba91e",
-"canvaskit/skwasm_heavy.js.symbols": "0755b4fb399918388d71b59ad390b055",
-"canvaskit/skwasm.wasm": "7e5f3afdd3b0747a1fd4517cea239898",
-"canvaskit/chromium/canvaskit.js.symbols": "e2d09f0e434bc118bf67dae526737d07",
-"canvaskit/chromium/canvaskit.js": "a80c765aaa8af8645c9fb1aae53f9abf",
-"canvaskit/chromium/canvaskit.wasm": "a726e3f75a84fcdf495a15817c63a35d",
-"canvaskit/canvaskit.js": "8331fe38e66b3a898c4f37648aaf7ee2",
-"canvaskit/canvaskit.wasm": "9b6a7830bf26959b200594729d73538e",
-"canvaskit/skwasm_heavy.wasm": "b0be7910760d205ea4e011458df6ee01"};
-// The application shell files that are downloaded before a service worker can
-// start.
-const CORE = ["main.dart.js",
-"main.dart.wasm",
-"main.dart.mjs",
-"index.html",
-"flutter_bootstrap.js",
-"assets/AssetManifest.bin.json",
-"assets/FontManifest.json"];
-
-// During install, the TEMP cache is populated with the application shell files.
-self.addEventListener("install", (event) => {
+self.addEventListener('install', () => {
   self.skipWaiting();
-  return event.waitUntil(
-    caches.open(TEMP).then((cache) => {
-      return cache.addAll(
-        CORE.map((value) => new Request(value, {'cache': 'reload'})));
-    })
-  );
 });
-// During activate, the cache is populated with the temp files downloaded in
-// install. If this service worker is upgrading from one with a saved
-// MANIFEST, then use this to retain unchanged resource files.
-self.addEventListener("activate", function(event) {
-  return event.waitUntil(async function() {
-    try {
-      var contentCache = await caches.open(CACHE_NAME);
-      var tempCache = await caches.open(TEMP);
-      var manifestCache = await caches.open(MANIFEST);
-      var manifest = await manifestCache.match('manifest');
-      // When there is no prior manifest, clear the entire cache.
-      if (!manifest) {
-        await caches.delete(CACHE_NAME);
-        contentCache = await caches.open(CACHE_NAME);
-        for (var request of await tempCache.keys()) {
-          var response = await tempCache.match(request);
-          await contentCache.put(request, response);
-        }
-        await caches.delete(TEMP);
-        // Save the manifest to make future upgrades efficient.
-        await manifestCache.put('manifest', new Response(JSON.stringify(RESOURCES)));
-        // Claim client to enable caching on first launch
-        self.clients.claim();
-        return;
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    (async () => {
+      try {
+        await self.registration.unregister();
+      } catch (e) {
+        console.warn('Failed to unregister the service worker:', e);
       }
-      var oldManifest = await manifest.json();
-      var origin = self.location.origin;
-      for (var request of await contentCache.keys()) {
-        var key = request.url.substring(origin.length + 1);
-        if (key == "") {
-          key = "/";
-        }
-        // If a resource from the old manifest is not in the new cache, or if
-        // the MD5 sum has changed, delete it. Otherwise the resource is left
-        // in the cache and can be reused by the new service worker.
-        if (!RESOURCES[key] || RESOURCES[key] != oldManifest[key]) {
-          await contentCache.delete(request);
-        }
-      }
-      // Populate the cache with the app shell TEMP files, potentially overwriting
-      // cache files preserved above.
-      for (var request of await tempCache.keys()) {
-        var response = await tempCache.match(request);
-        await contentCache.put(request, response);
-      }
-      await caches.delete(TEMP);
-      // Save the manifest to make future upgrades efficient.
-      await manifestCache.put('manifest', new Response(JSON.stringify(RESOURCES)));
-      // Claim client to enable caching on first launch
-      self.clients.claim();
-      return;
-    } catch (err) {
-      // On an unhandled exception the state of the cache cannot be guaranteed.
-      console.error('Failed to upgrade service worker: ' + err);
-      await caches.delete(CACHE_NAME);
-      await caches.delete(TEMP);
-      await caches.delete(MANIFEST);
-    }
-  }());
-});
-// The fetch handler redirects requests for RESOURCE files to the service
-// worker cache.
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== 'GET') {
-    return;
-  }
-  var origin = self.location.origin;
-  var key = event.request.url.substring(origin.length + 1);
-  // Redirect URLs to the index.html
-  if (key.indexOf('?v=') != -1) {
-    key = key.split('?v=')[0];
-  }
-  if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
-    key = '/';
-  }
-  // If the URL is not the RESOURCE list then return to signal that the
-  // browser should take over.
-  if (!RESOURCES[key]) {
-    return;
-  }
-  // If the URL is the index.html, perform an online-first request.
-  if (key == '/') {
-    return onlineFirst(event);
-  }
-  event.respondWith(caches.open(CACHE_NAME)
-    .then((cache) =>  {
-      return cache.match(event.request).then((response) => {
-        // Either respond with the cached resource, or perform a fetch and
-        // lazily populate the cache only if the resource was successfully fetched.
-        return response || fetch(event.request).then((response) => {
-          if (response && Boolean(response.ok)) {
-            cache.put(event.request, response.clone());
-          }
-          return response;
+
+      try {
+        const clients = await self.clients.matchAll({
+          type: 'window',
         });
-      })
-    })
-  );
-});
-self.addEventListener('message', (event) => {
-  // SkipWaiting can be used to immediately activate a waiting service worker.
-  // This will also require a page refresh triggered by the main worker.
-  if (event.data === 'skipWaiting') {
-    self.skipWaiting();
-    return;
-  }
-  if (event.data === 'downloadOffline') {
-    downloadOffline();
-    return;
-  }
-});
-// Download offline will check the RESOURCES for all files not in the cache
-// and populate them.
-async function downloadOffline() {
-  var resources = [];
-  var contentCache = await caches.open(CACHE_NAME);
-  var currentContent = {};
-  for (var request of await contentCache.keys()) {
-    var key = request.url.substring(origin.length + 1);
-    if (key == "") {
-      key = "/";
-    }
-    currentContent[key] = true;
-  }
-  for (var resourceKey of Object.keys(RESOURCES)) {
-    if (!currentContent[resourceKey]) {
-      resources.push(resourceKey);
-    }
-  }
-  return contentCache.addAll(resources);
-}
-// Attempt to download the resource online before falling back to
-// the offline cache.
-function onlineFirst(event) {
-  return event.respondWith(
-    fetch(event.request).then((response) => {
-      return caches.open(CACHE_NAME).then((cache) => {
-        cache.put(event.request, response.clone());
-        return response;
-      });
-    }).catch((error) => {
-      return caches.open(CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((response) => {
-          if (response != null) {
-            return response;
+        // Reload clients to ensure they are not using the old service worker.
+        clients.forEach((client) => {
+          if (client.url && 'navigate' in client) {
+            client.navigate(client.url);
           }
-          throw error;
         });
-      });
-    })
+      } catch (e) {
+        console.warn('Failed to navigate some service worker clients:', e);
+      }
+    })()
   );
-}
+});
